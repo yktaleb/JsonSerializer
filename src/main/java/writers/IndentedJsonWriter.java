@@ -1,4 +1,4 @@
-package writer;
+package writers;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -7,12 +7,8 @@ import java.util.List;
 
 public class IndentedJsonWriter extends JsonWriter {
 
-    private static final String NEW_LINE = "\n";
-    private static final char SPACE = ' ';
-
     private int indentSize = 4;
     private int currentLevel = 0;
-
 
     private List<String> listOfIndents = new ArrayList<String>();
 
@@ -25,15 +21,22 @@ public class IndentedJsonWriter extends JsonWriter {
     }
 
     public IndentedJsonWriter(Writer writer, int indentSize, int currentLevel) {
+        this.writer = writer;
         this.indentSize = indentSize;
         this.currentLevel = currentLevel;
     }
 
     private String getIndent() throws IOException {
-        String indent = listOfIndents.get(currentLevel);
-        if (indent != null)
+        String indent = null;
+        if (listOfIndents.size() == 0) {
+            listOfIndents.add("");
+        }
+        if (currentLevel < listOfIndents.size()) {
+            indent = listOfIndents.get(currentLevel);
+        }
+        if (indent != null) {
             return indent;
-        else {
+        } else {
             StringBuilder stringBuilderIndent = new StringBuilder();
             for (int i = 0; i < indentSize * currentLevel; i++) {
                 stringBuilderIndent.append(SPACE);
@@ -50,40 +53,46 @@ public class IndentedJsonWriter extends JsonWriter {
 
     private void toNewLine() throws IOException {
         writer.write(NEW_LINE);
+        addIndent();
     }
 
     @Override
     public void writeObjectBegin() throws IOException {
+        writer.append(OBJECT_BEGIN);
         currentLevel++;
-        writer.write(OBJECT_END);
-        addIndent();
+        toNewLine();
     }
 
     @Override
     public void writeObjectEnd() throws IOException {
         currentLevel--;
-        addIndent();
+        toNewLine();
         writer.append(OBJECT_END);
     }
 
     @Override
     public void writeArrayBegin() throws IOException {
         writer.append(ARRAY_BEGIN);
+        currentLevel++;
+        toNewLine();
     }
 
     @Override
     public void writeArrayEnd() throws IOException {
-        super.writeArrayEnd();
-    }
-
-    @Override
-    public void writeSeparator() throws IOException {
-        writer.append(SEPARATOR).write(SPACE);
+        currentLevel--;
+        toNewLine();
+        writer.append(ARRAY_END);
     }
 
     @Override
     public void writePropertySeparator() throws IOException {
         writer.append(SPACE).append(PROPERTY_SEPARATOR).write(SPACE);
+    }
+
+    @Override
+    public void writeSeparator() throws IOException {
+        writer.write(SEPARATOR);
+        toNewLine();
     }
 
     public void setWriter(Writer writer) {

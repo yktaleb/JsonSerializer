@@ -1,7 +1,7 @@
 package mappers;
 
 import serializer.JsonSerializer;
-import writer.JsonWriter;
+import writers.JsonWriter;
 
 import java.io.IOException;
 
@@ -13,9 +13,10 @@ public class BooleanMapper extends JsonMapper<Boolean> {
 
     @Override
     public void write(Boolean obj, JsonWriter writer) throws IOException {
-        if (!isNull(obj))
+        if (!isNull(obj)) {
             writer.writeBoolean(obj);
-        else
+        } else {
             writer.writeNull();
+        }
     }
 }

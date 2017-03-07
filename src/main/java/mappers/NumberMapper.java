@@ -1,7 +1,7 @@
 package mappers;
 
 import serializer.JsonSerializer;
-import writer.JsonWriter;
+import writers.JsonWriter;
 
 import java.io.IOException;
 
@@ -13,9 +13,10 @@ public class NumberMapper extends JsonMapper<Number> {
 
     @Override
     public void write(Number obj, JsonWriter writer) throws IOException {
-        if (!isNull(obj))
+        if (!isNull(obj)) {
             writer.writeNumber(obj);
-        else
+        } else {
             writer.writeNull();
+        }
     }
 }

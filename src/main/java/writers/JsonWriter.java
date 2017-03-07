@@ -1,4 +1,4 @@
-package writer;
+package writers;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -15,6 +15,8 @@ public class JsonWriter {
     protected static final char PROPERTY_SEPARATOR = ':';
     protected static final String NULL = "null";
     protected static final char QUOTE = '\"';
+    protected static final String NEW_LINE = "\n";
+    protected static final char SPACE = ' ';
 
     public JsonWriter() {
 
@@ -62,6 +64,16 @@ public class JsonWriter {
 
     public void writePropertySeparator() throws IOException {
         writer.write(PROPERTY_SEPARATOR);
+    }
+
+    public void writeEmptyArray() throws IOException {
+        writer.write(ARRAY_BEGIN);
+        writer.write(ARRAY_END);
+    }
+
+    public void writeEmptyObject() throws IOException {
+        writer.write(OBJECT_BEGIN);
+        writer.write(OBJECT_END);
     }
 
     public void flush() throws IOException {

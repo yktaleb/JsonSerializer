@@ -1,7 +1,7 @@
 package serializer;
 
 import mappers.*;
-import writer.JsonWriter;
+import writers.JsonWriter;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -36,17 +36,17 @@ public class JsonSerializer {
 
     private JsonMapper getMapper(Object obj) {
         Class clazz = obj.getClass();
-        if (mappersCache.containsKey(clazz))
+        if (mappersCache.containsKey(clazz)) {
             return mappersCache.get(clazz);
-        else if (obj instanceof Number)
+        } else if (obj instanceof Number) {
             return mappersCache.get(Number.class);
-        else if (obj instanceof Collection)
+        } else if (obj instanceof Collection) {
             return mappersCache.get(Collection.class);
-        else if (obj instanceof Map)
+        } else if (obj instanceof Map) {
             return mappersCache.get(Map.class);
-        else if (clazz.isArray())
+        } else if (clazz.isArray()) {
             return mappersCache.get(Object[].class);
-        else {
+        } else {
             PojoMapper res = new PojoMapper(this);
             mappersCache.put(clazz, res);
             return res;
@@ -80,8 +80,12 @@ public class JsonSerializer {
     }
 
     public void serialize(Object obj, JsonWriter writer) throws IOException {
-        JsonMapper mapper = getMapper(obj);
-        mapper.write(obj, writer);
+        if (obj != null) {
+            JsonMapper mapper = getMapper(obj);
+            mapper.write(obj, writer);
+        } else {
+            writer.writeNull();
+        }
     }
 
 }

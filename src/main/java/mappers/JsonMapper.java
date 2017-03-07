@@ -1,7 +1,7 @@
 package mappers;
 
 import serializer.JsonSerializer;
-import writer.JsonWriter;
+import writers.JsonWriter;
 
 import java.io.IOException;
 
@@ -14,8 +14,9 @@ public abstract class JsonMapper<T> {
     }
 
     protected boolean isNull(T obj) {
-        if (obj == null)
+        if (obj == null) {
             return true;
+        }
         return false;
     }
 

@@ -1,7 +1,7 @@
 package mappers;
 
 import serializer.JsonSerializer;
-import writer.JsonWriter;
+import writers.JsonWriter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,17 +17,23 @@ public class CollectionMapper extends JsonMapper<Collection<?>> {
     public void write(Collection<?> obj, JsonWriter writer) throws IOException {
         if (!isNull(obj)) {
             Iterator<?> iterator = obj.iterator();
-            writer.writeArrayBegin();
-            while (iterator.hasNext()) {
-                Object object = iterator.next();
-                if (object != null)
-                    serializer.serialize(object, writer);
-                else
-                    writer.writeNull();
-                if (iterator.hasNext())
-                    writer.writeSeparator();
+            if (!iterator.hasNext() == false) {
+                writer.writeArrayBegin();
+                while (iterator.hasNext()) {
+                    Object object = iterator.next();
+                    if (object != null) {
+                        serializer.serialize(object, writer);
+                    } else {
+                        writer.writeNull();
+                    }
+                    if (iterator.hasNext()) {
+                        writer.writeSeparator();
+                    }
+                }
+                writer.writeArrayEnd();
+            } else {
+                writer.writeEmptyArray();
             }
-            writer.writeArrayEnd();
         } else
             writer.writeNull();
     }
